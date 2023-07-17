@@ -1,1 +1,12 @@
-url-shortner
+# Compiled Object files
+*.o
+*.a
+*.exe
+
+# Go specific
+*.exe
+*.test
+*.out
+
+# Dependency directories
+vendor/

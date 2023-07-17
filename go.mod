@@ -1,4 +1,4 @@
-module githib.com/DivyanshuVerma98/url-shortener
+module github.com/DivyanshuVerma98/url-shortener
 
 go 1.20
 

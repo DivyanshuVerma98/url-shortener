@@ -1,24 +1,31 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
 
+	"github.com/DivyanshuVerma98/url-shortener/handlers"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-func handleRequest(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error){
-	body := request.Body
-	fmt.Println("Body", body)
-	fmt.Printf("Body Type: %T\n",body)
-	fmt.Println("Request", request)
-	return events.APIGatewayProxyResponse{}, nil
+func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	log.Println("HTTP Method", request.HTTPMethod)
+	log.Println("Path", request.Path)
+	if request.Path == "/createurl" && request.HTTPMethod == "POST" {
+		return handlers.CreateShortUrl(request)
+	}
+	return events.APIGatewayProxyResponse{Body: "Given path not found."}, nil
 }
 
-func main()  {
+func main() {
 	fmt.Println("This is my UrlShortner Service")
 	lambda.Start(handleRequest)
 }
+
+// build command
+// GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o main main.go
 
 /*
 type APIGatewayProxyRequest struct {
