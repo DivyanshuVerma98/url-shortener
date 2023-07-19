@@ -13,10 +13,17 @@ import (
 func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	log.Println("HTTP Method", request.HTTPMethod)
 	log.Println("Path", request.Path)
-	if request.Path == "/createurl" && request.HTTPMethod == "POST" {
+	switch request.Path {
+	case "/createurl":
 		return handlers.CreateShortUrl(request)
+	case "/getuserurl":
+		return handlers.GetUserUrl(request)
+	default:
+		return events.APIGatewayProxyResponse{
+			StatusCode: 404,
+			Body:       "Not Found",
+		}, nil
 	}
-	return events.APIGatewayProxyResponse{Body: "Given path not found."}, nil
 }
 
 func main() {
