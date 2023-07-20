@@ -38,13 +38,13 @@ func CreateUrlMapperItem(item *UrlMapperItem) bool {
 	return true
 }
 
-func GetUrlMapperItem(shortUrl string) UrlMapperItem {
+func GetUrlMapperItem(code string) UrlMapperItem {
 	log.Println("Inside GetUrlMapperItem")
 	result, err := svc.GetItem(&dynamodb.GetItemInput{
 		TableName: aws.String(config.MappingTableName),
 		Key: map[string]*dynamodb.AttributeValue{
 			"short_url": {
-				S: aws.String(shortUrl),
+				S: aws.String(code),
 			},
 		},
 	})

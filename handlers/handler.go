@@ -3,9 +3,12 @@ package handlers
 import (
 	"encoding/json"
 	"log"
-	"net/http"
+	"strings"
 
+	"github.com/DivyanshuVerma98/url-shortener/config"
 	"github.com/DivyanshuVerma98/url-shortener/models"
+	"github.com/DivyanshuVerma98/url-shortener/responses"
+	"github.com/DivyanshuVerma98/url-shortener/utils"
 	"github.com/aws/aws-lambda-go/events"
 )
 
@@ -13,46 +16,30 @@ func CreateShortUrl(request events.APIGatewayProxyRequest) (events.APIGatewayPro
 	log.Print("Inside CreateShortUrl")
 	var requestBody models.CreateShortUrlRequest
 	err := json.Unmarshal([]byte(request.Body), &requestBody)
-	log.Println("Request Body", requestBody)
 	if err != nil {
-		return clientError(http.StatusUnprocessableEntity)
+		return responses.ValidationError("Invalid Data")
 	}
+	if requestBody.Url == "" || !utils.ValidateUrl(requestBody.Url) {
+		return responses.ValidationError("Invalid or empty URL given")
+	}
+	code := utils.GenerateCode(config.LengthOfCode)
 	urlItem := models.UrlMapperItem{
 		UserUrl:  requestBody.Url,
-		ShortUrl: requestBody.Url,
+		ShortUrl: code,
 	}
 	_ = models.CreateUrlMapperItem(&urlItem)
-
-	response := map[string]string{"short_url": requestBody.Url}
-	response_json, _ := json.Marshal(response)
-
-	return events.APIGatewayProxyResponse{
-		StatusCode: http.StatusOK,
-		Headers:    map[string]string{"Content-Type": "application/json"},
-		Body:       string(response_json),
-	}, nil
+	shortUrl := config.DomainName + "/getuserurl/" + code
+	data := map[string]string{"short_url": shortUrl}
+	return responses.SuccessResponse(data)
 }
 
 func GetUserUrl(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	shortUrl := request.QueryStringParameters["url"]
-	item := models.GetUrlMapperItem(shortUrl)
+	log.Println("request", request)
+	index := strings.Index(request.Path, "getuserurl/")
+	code := request.Path[index+len("getuserurl/"):]
+	item := models.GetUrlMapperItem(code)
 	if item.UserUrl == "" {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 404,
-			Body:       "Not Found",
-		}, nil
+		return responses.NotFoundResponse()
 	}
-	return events.APIGatewayProxyResponse{
-		StatusCode: http.StatusMovedPermanently,
-		Headers: map[string]string{
-			"Location": item.UserUrl,
-		},
-	}, nil
-}
-
-func clientError(status int) (events.APIGatewayProxyResponse, error) {
-	return events.APIGatewayProxyResponse{
-		StatusCode: status,
-		Body:       http.StatusText(status),
-	}, nil
+	return responses.RedirectPermanentlyResponse(item.UserUrl)
 }
