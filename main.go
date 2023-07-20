@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strings"
 
+	"github.com/DivyanshuVerma98/url-shortener/config"
 	"github.com/DivyanshuVerma98/url-shortener/handlers"
 	"github.com/DivyanshuVerma98/url-shortener/responses"
 	"github.com/aws/aws-lambda-go/events"
@@ -13,6 +13,7 @@ import (
 )
 
 func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	log.Println("Request", request)
 	log.Println("HTTP Method", request.HTTPMethod)
 	log.Println("Path", request.Path)
 	requestPath := request.Path
@@ -20,8 +21,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	if requestPath == "/createurl" {
 		return handlers.CreateShortUrl(request)
 	}
-	index := strings.Index(requestPath, "getuserurl/")
-	if index != -1 {
+	if len(requestPath) == config.LengthOfCode+1 {
 		return handlers.GetUserUrl(request)
 	}
 	return responses.NotFoundResponse()

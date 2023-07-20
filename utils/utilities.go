@@ -4,6 +4,8 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"log"
+	"strconv"
+	"time"
 )
 
 func GenerateCode(length int) string {
@@ -19,4 +21,22 @@ func GenerateCode(length int) string {
 	log.Println("Random Bytes", randomBytes)
 	log.Println("Generate Code", randomCode)
 	return randomCode
+}
+
+func GetCurrentEpoch() int {
+	currentTime := time.Now()
+	epoch := currentTime.Unix()
+	//
+	return int(epoch)
+}
+
+func ConvertDaysToSec(days int) int {
+	return days * 24 * 60 * 60
+}
+
+func CreateExpTime(days int) string {
+	currEpoch := GetCurrentEpoch()
+	buffer := ConvertDaysToSec(days)
+	expTime := int64(currEpoch + buffer)
+	return strconv.FormatInt(expTime, 10)
 }
