@@ -18,10 +18,16 @@ func CreateShortUrl(request events.APIGatewayProxyRequest) (events.APIGatewayPro
 	if err != nil {
 		return responses.ValidationError("Invalid Data")
 	}
-	if requestBody.Url == "" || !utils.ValidateUrl(requestBody.Url) {
-		return responses.ValidationError("Invalid or empty URL given")
+	isValid, errMsg := requestBody.IsValid()
+	if !isValid{
+		return responses.ValidationError(errMsg)
 	}
-	code := utils.GenerateCode(config.LengthOfCode)
+	var code string
+	if requestBody.Alias!=""{
+		code = requestBody.Alias
+	}else{
+		code = utils.GenerateCode(config.LengthOfCode)
+	}
 	expTime := utils.CreateExpTime(config.ExpTimeInDays)
 	urlItem := models.UrlMapperItem{
 		UserUrl:  requestBody.Url,

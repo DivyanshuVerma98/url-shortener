@@ -26,7 +26,6 @@ func GenerateCode(length int) string {
 func GetCurrentEpoch() int {
 	currentTime := time.Now()
 	epoch := currentTime.Unix()
-	//
 	return int(epoch)
 }
 
