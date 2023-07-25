@@ -1,8 +1,10 @@
 package responses
 
 import (
+	"encoding/json"
 	"net/http"
 
+	"github.com/DivyanshuVerma98/url-shortener/models"
 	"github.com/aws/aws-lambda-go/events"
 )
 
@@ -20,9 +22,17 @@ func ServerError() (events.APIGatewayProxyResponse, error) {
 	}, nil
 }
 
-func ValidationError(msg string) (events.APIGatewayProxyResponse, error) {
+func ValidationError(message string, data map[string]string) (events.APIGatewayProxyResponse, error) {
+	responseItem := models.ResponseItem{
+		Message: message,
+		Data:    data,
+	}
+	response_json, _ := json.Marshal(responseItem)
 	return events.APIGatewayProxyResponse{
 		StatusCode: http.StatusBadRequest,
-		Body:       msg,
+		Headers: map[string]string{
+			"Access-Control-Allow-Origin": "*",
+			"Content-Type":                "application/json"},
+		Body: string(response_json),
 	}, nil
 }

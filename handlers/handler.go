@@ -16,16 +16,16 @@ func CreateShortUrl(request events.APIGatewayProxyRequest) (events.APIGatewayPro
 	var requestBody models.CreateShortUrlRequest
 	err := json.Unmarshal([]byte(request.Body), &requestBody)
 	if err != nil {
-		return responses.ValidationError("Invalid Data")
+		return responses.ValidationError("Invalid Data", map[string]string{})
 	}
 	isValid, errMsg := requestBody.IsValid()
-	if !isValid{
-		return responses.ValidationError(errMsg)
+	if !isValid {
+		return responses.ValidationError(errMsg, map[string]string{})
 	}
 	var code string
-	if requestBody.Alias!=""{
+	if requestBody.Alias != "" {
 		code = requestBody.Alias
-	}else{
+	} else {
 		code = utils.GenerateCode(config.LengthOfCode)
 	}
 	expTime := utils.CreateExpTime(config.ExpTimeInDays)
@@ -37,7 +37,7 @@ func CreateShortUrl(request events.APIGatewayProxyRequest) (events.APIGatewayPro
 	_ = models.CreateUrlMapperItem(&urlItem)
 	shortUrl := config.DomainName + "/" + code
 	data := map[string]string{"short_url": shortUrl}
-	return responses.SuccessResponse(data)
+	return responses.SuccessResponse("Success", data)
 }
 
 func GetUserUrl(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {

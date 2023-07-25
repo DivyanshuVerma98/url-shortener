@@ -21,7 +21,7 @@ func handleRequest(ctx context.Context, request events.APIGatewayProxyRequest) (
 	if requestPath == "/createurl" {
 		return handlers.CreateShortUrl(request)
 	}
-	if len(requestPath) == config.LengthOfCode+1 {
+	if len(requestPath) >= config.MinLengthOfAlias+1 {
 		return handlers.GetUserUrl(request)
 	}
 	return responses.NotFoundResponse()

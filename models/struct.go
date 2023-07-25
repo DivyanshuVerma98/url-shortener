@@ -29,7 +29,7 @@ func (request CreateShortUrlRequest) IsValid() (bool, string) {
 		}
 		// Checking is the given Alias already exists
 		item := GetUrlMapperItem(request.Alias)
-		if item.UserUrl!=""{
+		if item.UserUrl != "" {
 			return false, "Alias is not available."
 		}
 	}
@@ -40,4 +40,9 @@ type UrlMapperItem struct {
 	ShortUrl string `json:"short_url"`
 	UserUrl  string `json:"user_url"`
 	ExpTime  string `json:"exp_time"`
+}
+
+type ResponseItem struct {
+	Message string            `json:"message"`
+	Data    map[string]string `json:"data"`
 }
