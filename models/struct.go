@@ -39,7 +39,7 @@ func (request CreateShortUrlRequest) IsValid() (bool, string) {
 type UrlMapperItem struct {
 	ShortUrl string `json:"short_url"`
 	UserUrl  string `json:"user_url"`
-	ExpTime  string `json:"exp_time"`
+	ExpTime  int    `json:"exp_time"`
 }
 
 type ResponseItem struct {

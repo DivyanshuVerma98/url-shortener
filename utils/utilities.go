@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"log"
-	"strconv"
 	"time"
 )
 
@@ -33,9 +32,9 @@ func ConvertDaysToSec(days int) int {
 	return days * 24 * 60 * 60
 }
 
-func CreateExpTime(days int) string {
+func CreateExpTime(days int) int {
 	currEpoch := GetCurrentEpoch()
 	buffer := ConvertDaysToSec(days)
 	expTime := int64(currEpoch + buffer)
-	return strconv.FormatInt(expTime, 10)
+	return int(expTime)
 }
