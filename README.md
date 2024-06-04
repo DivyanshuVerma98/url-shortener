@@ -1,4 +1,5 @@
-[![GO](https://skillicons.dev/icons?i=go)](https://go.dev/) [![AWS](https://skillicons.dev/icons?i=aws)]()
+![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white) &nbsp;
+![AWS](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white) &nbsp;
 
 # URL Shortener
 This repository contains the backend code for a URL shortening service - [www.chotalink.com](https://chotalink.com)
